@@ -24,6 +24,17 @@ export interface ScheduleItem {
   vehicle: Vehicle;
 }
 
+// ➕ Tambahkan RouteStop jika routeDetail dari API juga menyertakan stops
+export interface RouteStop {
+  id: number;
+  stop_order: number;
+  city: {
+    id: number;
+    name: string;
+    description?: string;
+  };
+}
+
 export interface ScheduleRouteData {
   id: number;
   name: string;
@@ -33,6 +44,7 @@ export interface ScheduleRouteData {
   is_active: number;
   latitude: string;
   longitude: string;
+  route_stops?: RouteStop[];
   schedules: ScheduleItem[];
 }
 
