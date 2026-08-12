@@ -1,4 +1,3 @@
-
 // app/(home)/page.tsx
 "use client";
 
@@ -38,7 +37,9 @@ export default function HomePage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-gray-200">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Rute Transportasi
+              {activeType == "afternoon"
+                ? "Mau pulang kemana?"
+                : "Mau berangkat darimana?"}
             </h1>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -49,7 +50,7 @@ export default function HomePage() {
           {serverTime && (
             <div className="mt-4 md:mt-0 flex items-center space-x-3 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg text-sm text-blue-900">
               <div>
-                <span className="font-semibold">Waktu Server:</span>{" "}
+                <span className="font-semibold">Sekarang Jam:</span>{" "}
                 {serverTime}
               </div>
 
@@ -58,7 +59,7 @@ export default function HomePage() {
               <div>
                 <span className="font-semibold">Sesi:</span>{" "}
                 <span className="capitalize bg-blue-600 text-white px-2 py-0.5 rounded text-xs font-medium">
-                  {activeType}
+                  {activeType == "afternoon" ? "Sore" : "Pagi"}
                 </span>
               </div>
             </div>

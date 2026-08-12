@@ -53,6 +53,15 @@ export const Navbar = () => {
                 Profile Saya
               </Link>
             )}
+            {isAuth && (
+              <Link
+                href="/history"
+                onClick={() => setIsOpen(false)}
+                className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+              >
+                Riwayat Pemesanan
+              </Link>
+            )}
           </div>
 
           {/* Desktop Auth Buttons */}
@@ -135,6 +144,15 @@ export const Navbar = () => {
               className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
             >
               Profile Saya
+            </Link>
+          )}
+          {isAuth && (
+            <Link
+              href="/history"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+            >
+              Riwayat Pemesanan
             </Link>
           )}
 

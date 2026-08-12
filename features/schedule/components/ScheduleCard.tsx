@@ -1,4 +1,3 @@
-// schedule/components/ScheduleCard.tsx
 "use client";
 
 import { ScheduleItem } from "../types/schedule";
@@ -24,6 +23,13 @@ export const ScheduleCard = ({
 }: ScheduleCardProps) => {
   const isAvailable = schedule.available_seats > 0;
 
+  const handleSelect = () => {
+    // Jalankan callback hanya jika kursi masih tersedia
+    if (isAvailable && onSelectSchedule) {
+      onSelectSchedule(schedule);
+    }
+  };
+
   return (
     <div className="group relative bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:shadow-slate-200/40 hover:-translate-y-0.5 transition-all duration-200">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -42,7 +48,7 @@ export const ScheduleCard = ({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-slate-900 text-base group-hover:text-blue-600 transition-colors">
-                {schedule.vehicle.name}
+                {schedule.vehicle?.name || "Armada Utama"}
               </h3>
               {schedule.is_popular === 1 && (
                 <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-xs font-semibold px-2.5 py-0.5 rounded-full">
@@ -57,12 +63,12 @@ export const ScheduleCard = ({
             {/* Detail Plat & Jenis Kendaraan */}
             <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
               <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-mono">
-                {schedule.vehicle.plate_number ||
-                  schedule.vehicle.code ||
+                {schedule.vehicle?.plate_number ||
+                  schedule.vehicle?.code ||
                   "N/A"}
               </span>
               <span>•</span>
-              <span>{schedule.vehicle.type || "Minibus Executive"}</span>
+              <span>{schedule.vehicle?.type || "Minibus Executive"}</span>
             </div>
           </div>
         </div>
@@ -95,10 +101,10 @@ export const ScheduleCard = ({
           <button
             type="button"
             disabled={!isAvailable}
-            onClick={() => onSelectSchedule && onSelectSchedule(schedule)}
+            onClick={handleSelect}
             className={`px-5 py-3 rounded-xl font-bold text-sm transition-all duration-150 active:scale-[0.98] ${
               isAvailable
-                ? "bg-slate-900 hover:bg-blue-600 text-white shadow-md shadow-slate-900/10 hover:shadow-blue-500/25"
+                ? "bg-slate-900 hover:bg-blue-600 text-white shadow-md shadow-slate-900/10 hover:shadow-blue-500/25 cursor-pointer"
                 : "bg-slate-100 text-slate-400 cursor-not-allowed"
             }`}
           >

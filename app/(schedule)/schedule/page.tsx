@@ -29,7 +29,8 @@ export default function SchedulePage() {
           ID Rute Tidak Ditemukan
         </h2>
         <p className="text-sm text-gray-500 mb-6">
-          Silakan pilih rute dan halte tujuan terlebih dahulu dari halaman beranda.
+          Silakan pilih rute dan halte tujuan terlebih dahulu dari halaman
+          beranda.
         </p>
         <button
           onClick={() => router.push("/")}
@@ -46,7 +47,9 @@ export default function SchedulePage() {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] gap-3">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-        <p className="text-xs font-medium text-gray-400">Memuat data jadwal...</p>
+        <p className="text-xs font-medium text-gray-400">
+          Memuat data jadwal...
+        </p>
       </div>
     );
   }
@@ -201,8 +204,27 @@ export default function SchedulePage() {
               schedule={schedule}
               price={routeDetail.price}
               onSelectSchedule={(selected) => {
-                // Navigasi ke langkah berikutnya (misal: pilih kursi / checkout)
-                console.log("Jadwal terpilih:", selected);
+                console.log("1. Schedule dipilih:", selected);
+
+                try {
+                  // Pastikan nilai tidak undefined/null
+                  const queryParams = new URLSearchParams({
+                    product_id: String(routeDetail?.product_id || 1),
+                    transport_route_id: String(routeDetail?.id || routeId || 1),
+                    schedule_id: String(selected?.id || 1),
+                    date: currentDate || "2026-07-02",
+                    origin: originName || "",
+                    destination: destinationName || "",
+                  });
+
+                  const targetUrl = `/checkout?${queryParams.toString()}`;
+                  console.log("2. Membuka URL target:", targetUrl);
+
+                  // Jalankan navigasi
+                  router.push(targetUrl);
+                } catch (err) {
+                  console.error("Gagal melakukan navigasi:", err);
+                }
               }}
             />
           ))
