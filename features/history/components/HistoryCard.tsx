@@ -1,6 +1,7 @@
 // features/history/components/HistoryCard.tsx
 "use client";
 
+import { useRouter } from "next/navigation";
 import { BookingHistoryItem } from "@/features/history/types/historyTypes";
 
 interface HistoryCardProps {
@@ -25,6 +26,12 @@ const formatDate = (dateString: string) => {
 };
 
 export const HistoryCard = ({ booking }: HistoryCardProps) => {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/history/${booking.id}`);
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "scheduled":
@@ -70,14 +77,17 @@ export const HistoryCard = ({ booking }: HistoryCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow space-y-4">
+    <div
+      onClick={handleCardClick}
+      className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-slate-200 transition-all cursor-pointer active:scale-[0.99] space-y-4 group"
+    >
       {/* Header Card: Kode Booking & Badges */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-slate-400">
             Kode Tiket:
           </span>
-          <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg">
+          <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors px-2.5 py-1 rounded-lg">
             {booking.booking_code}
           </span>
         </div>
@@ -130,10 +140,13 @@ export const HistoryCard = ({ booking }: HistoryCardProps) => {
           </span>
           <span className="text-slate-400"> ({booking.total_seats} Kursi)</span>
         </div>
-        <div>
+        <div className="flex items-center gap-1.5">
           <span className="text-slate-400">Total: </span>
           <span className="font-extrabold text-sm text-slate-900">
             {formatRupiah(booking.total_price)}
+          </span>
+          <span className="text-slate-300 font-bold group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all ml-1">
+            →
           </span>
         </div>
       </div>

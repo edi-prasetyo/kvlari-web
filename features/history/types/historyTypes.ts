@@ -58,3 +58,66 @@ export interface MyBookingsResponse {
   success: boolean;
   data: PaginatedBookings;
 }
+// Detail Booking Response
+export interface BookingTransaction {
+  id: number;
+  transaction_code: string;
+  user_id: number;
+  uuid: string;
+  qr_code: string | null;
+  product_id: number;
+  transactionable_type: string;
+  transactionable_id: number;
+  discount_total: number;
+  price: number;
+  amount: number;
+  direction: string;
+  status: string;
+  payment_method: string;
+  payment_token: string | null;
+  invoice_id: string | null;
+  reference_id: string | null;
+  payment_url: string | null;
+  image: string | null;
+  description: string;
+  updated_by: number | null;
+  created_at: string;
+  updated_at: string;
+}
+export interface BookingDetail {
+  id: number;
+  booking_code: string;
+  user_id: number;
+  contact_name: string;
+  contact_phone: string;
+  uuid: string;
+  transport_route_id: number;
+  schedule_id: number;
+  total_seats: number;
+  price: number;
+  total_price: number;
+  date: string;
+  time: string;
+  schedule_type: string;
+  origin: string;
+  destination: string;
+  vehicle: string;
+  plate_number: string | null;
+  code: string;
+  driver_name: string | null;
+  contact_driver: string;
+  payment_method: string;
+  payment_status: "paid" | "unpaid" | "pending" | string;
+  paid_at: string | null;
+  status: "scheduled" | "completed" | "cancelled" | string;
+  is_read: number;
+  created_at: string;
+  updated_at: string;
+  transactions?: BookingTransaction[];
+}
+
+export interface BookingDetailResponse {
+  success: boolean;
+  message?: string;
+  data: BookingDetail;
+}

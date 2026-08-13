@@ -32,7 +32,7 @@ export const Navbar = () => {
           {/* Logo / Brand */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="text-xl font-bold text-blue-600">
-              MyApp
+              Kvlari
             </Link>
           </div>
 
@@ -56,10 +56,25 @@ export const Navbar = () => {
             {isAuth && (
               <Link
                 href="/history"
-                onClick={() => setIsOpen(false)}
-                className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+                className={`${pathname === "/history" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
               >
-                Riwayat Pemesanan
+                Riwayat Booking
+              </Link>
+            )}
+            {isAuth && (
+              <Link
+                href="/points"
+                className={`${pathname === "/points" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
+              >
+                Top Up Point
+              </Link>
+            )}
+            {isAuth && (
+              <Link
+                href="/transaction"
+                className={`${pathname === "/transaction" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
+              >
+                Riwayat Transaksi
               </Link>
             )}
           </div>
@@ -152,7 +167,25 @@ export const Navbar = () => {
               onClick={() => setIsOpen(false)}
               className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
             >
-              Riwayat Pemesanan
+              Riwayat Booking
+            </Link>
+          )}
+          {isAuth && (
+            <Link
+              href="/points"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+            >
+              Top Up Point
+            </Link>
+          )}
+          {isAuth && (
+            <Link
+              href="/transaction"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+            >
+              Riwayat Transaksi
             </Link>
           )}
 
