@@ -6,11 +6,11 @@ export const privateApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   timeout: 10000,
 });
 
-// Request Interceptor: Menyisipkan Access Token
 privateApi.interceptors.request.use(
   (config) => {
     const token = getCookie("access_token");
@@ -22,7 +22,6 @@ privateApi.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response Interceptor: Redirect jika 401 (Token Expired / Invalid)
 privateApi.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -11,14 +11,11 @@ export default function SchedulePage() {
   const router = useRouter();
   const routeId = searchParams.get("id");
 
-  // Fetch data jadwal rute dari hook API
   const { routeDetail, serverTime, activeType, currentDate, loading, error } =
     useSchedule(routeId);
 
-  // Ambil state origin & destination dari Zustand Store
   const { origin, destination } = useRouteStore();
 
-  // 1. KONDISI: Jika Query Parameter ?id= tidak ada di URL
   if (!routeId) {
     return (
       <div className="max-w-md mx-auto my-16 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 text-center">
@@ -42,7 +39,6 @@ export default function SchedulePage() {
     );
   }
 
-  // 2. KONDISI: Loading State
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-[60vh] gap-3">
@@ -54,7 +50,6 @@ export default function SchedulePage() {
     );
   }
 
-  // 3. KONDISI: Error State atau Data Tidak Ada
   if (error || !routeDetail) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -71,7 +66,6 @@ export default function SchedulePage() {
     );
   }
 
-  // Menentukan nama & deskripsi Origin & Destination (dengan fallback jika state Zustand kosong)
   const originName = origin?.city?.name || "Halte Keberangkatan";
   const originDesc = origin?.city?.description;
 

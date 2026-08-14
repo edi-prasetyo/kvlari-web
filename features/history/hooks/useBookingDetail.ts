@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { historyService } from "../services/historyService";
-import { BookingDetail } from "../types/historyTypes";
+import { historyService } from "@/features/history/services/historyService";
+import { BookingDetail } from "@/features/history/types/historyTypes";
 
 export const useBookingDetail = (id: string | number | null) => {
   const [booking, setBooking] = useState<BookingDetail | null>(null);

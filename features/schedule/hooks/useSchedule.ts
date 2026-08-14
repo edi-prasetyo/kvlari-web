@@ -1,7 +1,7 @@
 // schedule/hooks/useSchedule.ts
 import { useEffect, useState } from "react";
-import { getRouteSchedule } from "../services/scheduleService";
-import { ScheduleRouteData } from "../types/schedule";
+import { getRouteSchedule } from "@/features/schedule/services/scheduleService";
+import { ScheduleRouteData } from "@/features/schedule/types/schedule";
 
 export const useSchedule = (routeId: string | null) => {
   const [routeDetail, setRouteDetail] = useState<ScheduleRouteData | null>(

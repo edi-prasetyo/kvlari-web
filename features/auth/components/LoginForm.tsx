@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "@/features/auth/hooks/useLogin";
 
 export const LoginForm = () => {
   // State menampung Email atau No. HP
@@ -14,7 +14,6 @@ export const LoginForm = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Kirim value identifier ke field `email` sesuai kontrak API backend
     await login({
       email: identifier,
       password,

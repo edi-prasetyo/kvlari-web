@@ -2,9 +2,9 @@
 "use client";
 
 import { useState } from "react";
-import { TransportRoute, RouteStop } from "../types/transport";
 import { useRouter } from "next/navigation";
 import { useRouteStore } from "@/features/home/hooks/useRouteStore";
+import { TransportRoute, RouteStop } from "@/features/home/types/transport";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -23,21 +23,18 @@ export const RouteCard = ({ route }: RouteCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const setBookingSelection = useRouteStore(
-    (state) => state.setBookingSelection
+    (state) => state.setBookingSelection,
   );
 
   const sortedStops = [...route.route_stops].sort(
-    (a, b) => a.stop_order - b.stop_order
+    (a, b) => a.stop_order - b.stop_order,
   );
 
-  // Trigger animasi buka
   const handleOpen = () => {
     setIsOpen(true);
-    // Beri sedikit delay micro-task agar transisi CSS ter-trigger dari y-full ke y-0
     setTimeout(() => setIsAnimating(true), 10);
   };
 
-  // Trigger animasi tutup (tunggu transisi slide down selesai sebelum unmount)
   const handleClose = () => {
     setIsAnimating(false);
     setTimeout(() => setIsOpen(false), 300);
@@ -46,11 +43,7 @@ export const RouteCard = ({ route }: RouteCardProps) => {
   const handleSelectStop = (selectedDestinationStop: RouteStop) => {
     const originStop =
       sortedStops.length > 0 ? sortedStops[0] : selectedDestinationStop;
-
-    // 1. Simpan ke Zustand Store
     setBookingSelection(route, originStop, selectedDestinationStop);
-
-    // 2. Navigasi ke halaman jadwal dengan query ID rute
     router.push(`/schedule?id=${route.id}`);
   };
 
@@ -66,10 +59,11 @@ export const RouteCard = ({ route }: RouteCardProps) => {
                 {route.name}
               </h2>
               <span
-                className={`px-2.5 py-1 text-xs font-medium rounded-full backdrop-blur-sm ${route.is_active === 1
+                className={`px-2.5 py-1 text-xs font-medium rounded-full backdrop-blur-sm ${
+                  route.is_active === 1
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
                     : "bg-gray-100 text-gray-600 border border-gray-200"
-                  }`}
+                }`}
               >
                 {route.is_active === 1 ? "Aktif" : "Non-aktif"}
               </span>
@@ -132,15 +126,17 @@ export const RouteCard = ({ route }: RouteCardProps) => {
         <div className="fixed inset-0 z-50 flex items-end justify-center overflow-hidden">
           {/* Backdrop Blur dengan Fading Opacity */}
           <div
-            className={`fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 ease-out ${isAnimating ? "opacity-100" : "opacity-0"
-              }`}
+            className={`fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 ease-out ${
+              isAnimating ? "opacity-100" : "opacity-0"
+            }`}
             onClick={handleClose}
           />
 
           {/* Bottom Sheet Container dengan Bezier Curve khas Mobile Native */}
           <div
-            className={`relative w-full max-w-lg bg-white rounded-t-[32px] p-6 shadow-2xl z-10 max-h-[82vh] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${isAnimating ? "translate-y-0" : "translate-y-full"
-              }`}
+            className={`relative w-full max-w-lg bg-white rounded-t-[32px] p-6 shadow-2xl z-10 max-h-[82vh] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+              isAnimating ? "translate-y-0" : "translate-y-full"
+            }`}
           >
             {/* Drag Handle Bar */}
             <div
@@ -193,20 +189,22 @@ export const RouteCard = ({ route }: RouteCardProps) => {
                     >
                       {/* Node Bullet Point */}
                       <div
-                        className={`absolute -left-[20px] w-4 h-4 rounded-full border-2 bg-white flex items-center justify-center transition-all group-hover:scale-125 ${isFirst
+                        className={`absolute -left-[20px] w-4 h-4 rounded-full border-2 bg-white flex items-center justify-center transition-all group-hover:scale-125 ${
+                          isFirst
                             ? "border-blue-600 ring-4 ring-blue-100"
                             : isLast
                               ? "border-emerald-600 ring-4 ring-emerald-100"
                               : "border-gray-300 group-hover:border-blue-500"
-                          }`}
+                        }`}
                       >
                         <div
-                          className={`w-1.5 h-1.5 rounded-full ${isFirst
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            isFirst
                               ? "bg-blue-600"
                               : isLast
                                 ? "bg-emerald-600"
                                 : "bg-gray-300 group-hover:bg-blue-500"
-                            }`}
+                          }`}
                         />
                       </div>
 

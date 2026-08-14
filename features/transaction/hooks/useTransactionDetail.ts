@@ -2,8 +2,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { transactionService } from "../services/transactionService";
-import { TransactionDetail } from "../types/transactionTypes";
+import { transactionService } from "@/features/transaction/services/transactionService";
+import { TransactionDetail } from "@/features/transaction/types/transactionTypes";
 
 export const useTransactionDetail = (id: string | number | null) => {
   const [transaction, setTransaction] = useState<TransactionDetail | null>(

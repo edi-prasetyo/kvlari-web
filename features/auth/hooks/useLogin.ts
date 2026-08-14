@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
-import { loginApi } from "../services/authApi";
-import { LoginPayload } from "../types/auth.types";
+import { loginApi } from "@/features/auth/services/authApi";
+import { LoginPayload } from "@/features/auth/types/authTypes";
 
 export const useLogin = () => {
   const router = useRouter();
@@ -17,9 +17,8 @@ export const useLogin = () => {
     try {
       const data = await loginApi(payload);
 
-      // Simpan access_token ke Cookie (kadaluarsa disesuaikan dari expires_in / detik ke hari)
       setCookie("access_token", data.access_token, {
-        maxAge: data.expires_in, // 60 detik (sesuai respon API)
+        maxAge: data.expires_in,
         path: "/",
       });
 
@@ -28,8 +27,28 @@ export const useLogin = () => {
         path: "/",
       });
 
-      // Redirect ke halaman Profile setelah berhasil login
-      router.push("/profile");
+      // PERBAIKAN:
+      // 1. Utamakan data.user.is_verified daripada root data.is_verified
+      // 2. Konversi angka (0/1) ke boolean
+      const rawVerifiedState = data.user?.is_verified ?? data.is_verified;
+      const isVerified = Number(rawVerifiedState) === 1;
+
+      if (!isVerified) {
+        const emailOrPhone =
+          data.user?.email ||
+          data.user?.phone ||
+          (payload as any).email ||
+          (payload as any).login ||
+          "";
+
+        const expiresAt = data.user?.otp_expires_at || "";
+
+        router.push(
+          `/verify?email=${encodeURIComponent(emailOrPhone)}&expires_at=${encodeURIComponent(expiresAt)}`,
+        );
+      } else {
+        router.push("/profile");
+      }
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message ||

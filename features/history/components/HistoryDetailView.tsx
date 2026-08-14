@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useBookingDetail } from "../hooks/useBookingDetail";
+import { useBookingDetail } from "@/features/history/hooks/useBookingDetail";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {

@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookingSuccessData } from "../types/success.types";
+import { BookingSuccessData } from "../types/successTypes";
 
 interface BookingSuccessCardProps {
   data: BookingSuccessData;

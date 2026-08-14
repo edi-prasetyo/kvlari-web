@@ -3,10 +3,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { historyService } from "@/features/history/services/historyService";
-import {
-  BookingHistoryItem,
-  PaginatedBookings,
-} from "@/features/history/types/historyTypes";
+import { PaginatedBookings } from "@/features/history/types/historyTypes";
 
 export const useMyBookings = (initialPage = 1) => {
   const [data, setData] = useState<PaginatedBookings | null>(null);

@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useMyBookings } from "../hooks/useMyBookings";
-import { HistoryCard } from "./HistoryCard";
+import { useMyBookings } from "@/features/history/hooks/useMyBookings";
+import { HistoryCard } from "@/features/history/components/HistoryCard";
 
 type TabStatus = "scheduled" | "completed";
 

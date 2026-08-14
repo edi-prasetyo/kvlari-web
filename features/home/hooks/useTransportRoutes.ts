@@ -1,7 +1,7 @@
 // home/hooks/useTransportRoutes.ts
 import { useEffect, useState } from "react";
-import { getTransportRoutes } from "../services/transportService";
-import { TransportRoute } from "../types/transport";
+import { getTransportRoutes } from "@/features/home/services/transportService";
+import { TransportRoute } from "@/features/home/types/transport";
 
 export const useTransportRoutes = () => {
   const [routes, setRoutes] = useState<TransportRoute[]>([]);

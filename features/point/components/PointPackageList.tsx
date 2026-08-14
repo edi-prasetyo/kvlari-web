@@ -3,14 +3,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { usePoints } from "../hooks/usePoints";
-import { PointCard } from "./PointCard";
-import { PointPackage } from "../types/pointTypes";
+import { usePoints } from "@/features/point/hooks/usePoints";
+import { PointCard } from "@/features/point/components/PointCard";
+import { PointPackage } from "@/features/point/types/pointTypes";
 
 export const PointPackageList = () => {
   const router = useRouter();
   const { packages, isLoading, error } = usePoints();
-  const [selectedPackage, setSelectedPackage] = useState<PointPackage | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<PointPackage | null>(
+    null,
+  );
 
   if (isLoading) {
     return (

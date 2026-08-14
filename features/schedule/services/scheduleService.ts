@@ -1,6 +1,6 @@
 // schedule/services/scheduleService.ts
 import { publicApi } from "@/lib/api/publicApi";
-import { ScheduleResponse } from "../types/schedule";
+import { ScheduleResponse } from "@/features/schedule/types/schedule";
 
 export const getRouteSchedule = async (
   id: string | number,

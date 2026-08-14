@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { pointService } from "@/features/point/services/pointService";
-import { PointPackage } from "../types/pointTypes";
+import { PointPackage } from "@/features/point/types/pointTypes";
 
 export const usePoints = () => {
   const [packages, setPackages] = useState<PointPackage[]>([]);
@@ -18,7 +18,7 @@ export const usePoints = () => {
       setPackages(data);
     } catch (err: any) {
       setError(
-        err?.response?.data?.message || "Gagal memuat daftar paket poin."
+        err?.response?.data?.message || "Gagal memuat daftar paket poin.",
       );
     } finally {
       setIsLoading(false);

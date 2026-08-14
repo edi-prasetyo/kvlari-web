@@ -3,8 +3,8 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useTransactionDetail } from "../hooks/useTransactionDetail";
-import { useBanks } from "../hooks/useBanks";
+import { useTransactionDetail } from "@/features/transaction/hooks/useTransactionDetail";
+import { useBanks } from "@/features/transaction/hooks/useBanks";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -17,8 +17,6 @@ const formatRupiah = (amount: number) => {
 export const PaymentDetailView = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  // Ambil id untuk request ke backend & uuid untuk estetika
   const id = searchParams.get("id");
 
   const {
@@ -116,22 +114,6 @@ export const PaymentDetailView = () => {
           </p>
         </div>
 
-        {/* Tampilkan QR Code jika tersedia dari backend */}
-        {/* {transaction.qr_code && !isCompleted && (
-          <div className="text-center space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Scan QR Code untuk Pembayaran
-            </p>
-            <div className="flex justify-center">
-              <img
-                src={transaction.qr_code}
-                alt="QR Code Pembayaran"
-                className="w-48 h-48 object-contain bg-white p-2 rounded-xl border border-slate-200"
-              />
-            </div>
-          </div>
-        )} */}
-
         {/* Transfer Bank Tujuan */}
         {!isCompleted && (
           <div className="space-y-4">
@@ -152,17 +134,6 @@ export const PaymentDetailView = () => {
                         <span className="font-black text-slate-800 text-sm">
                           {bank.name}
                         </span>
-                        {/* {bank.logo ? (
-                          <img
-                            src={bank.logo}
-                            alt={bank.name}
-                            className="h-7 object-contain max-w-[100px]"
-                          />
-                        ) : (
-                          <span className="font-black text-slate-800 text-sm">
-                            {bank.name}
-                          </span>
-                        )} */}
                         <span className="text-[10px] font-bold bg-slate-200/70 text-slate-600 px-2 py-0.5 rounded">
                           Kode: {bank.code}
                         </span>

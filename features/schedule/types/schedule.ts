@@ -24,7 +24,6 @@ export interface ScheduleItem {
   vehicle: Vehicle;
 }
 
-// ➕ Tambahkan RouteStop jika routeDetail dari API juga menyertakan stops
 export interface RouteStop {
   id: number;
   stop_order: number;

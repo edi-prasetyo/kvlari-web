@@ -1,6 +1,6 @@
 // features/history/services/historyService.ts
 
-import { privateApi } from "@/lib/api/privateApi"; // Sesuaikan lokasi import privateApi Anda
+import { privateApi } from "@/lib/api/privateApi";
 import {
   MyBookingsResponse,
   BookingDetailResponse,

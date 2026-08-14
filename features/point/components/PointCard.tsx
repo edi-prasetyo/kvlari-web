@@ -1,7 +1,7 @@
 // features/point/components/PointCard.tsx
 "use client";
 
-import { PointPackage } from "../types/pointTypes";
+import { PointPackage } from "@/features/point/types/pointTypes";
 
 interface PointCardProps {
   item: PointPackage;

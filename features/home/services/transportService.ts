@@ -1,6 +1,6 @@
 // home/services/transportService.ts
 import { publicApi } from "@/lib/api/publicApi";
-import { TransportRouteResponse } from "../types/transport";
+import { TransportRouteResponse } from "@/features/home/types/transport";
 
 export const getTransportRoutes = async (): Promise<TransportRouteResponse> => {
   const response =

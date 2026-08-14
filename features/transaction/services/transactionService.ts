@@ -5,7 +5,7 @@ import {
   TransactionDetailResponse,
   BankListResponse,
   TransactionListResponse,
-} from "../types/transactionTypes";
+} from "@/features/transaction/types/transactionTypes";
 
 export const transactionService = {
   getPointTransactions: async (

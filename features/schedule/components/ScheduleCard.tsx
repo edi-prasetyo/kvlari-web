@@ -1,6 +1,6 @@
 "use client";
 
-import { ScheduleItem } from "../types/schedule";
+import { ScheduleItem } from "@/features/schedule/types/schedule";
 
 interface ScheduleCardProps {
   schedule: ScheduleItem;
@@ -24,7 +24,6 @@ export const ScheduleCard = ({
   const isAvailable = schedule.available_seats > 0;
 
   const handleSelect = () => {
-    // Jalankan callback hanya jika kursi masih tersedia
     if (isAvailable && onSelectSchedule) {
       onSelectSchedule(schedule);
     }

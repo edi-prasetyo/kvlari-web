@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { transactionService } from "../services/transactionService";
-import { PaginatedTransactions } from "../types/transactionTypes";
+import { transactionService } from "@/features/transaction/services/transactionService";
+import { PaginatedTransactions } from "@/features/transaction/types/transactionTypes";
 
 export const useTransactionList = (initialPage: number = 1) => {
   const [data, setData] = useState<PaginatedTransactions | null>(null);

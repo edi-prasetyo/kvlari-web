@@ -2,8 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import { pointService } from "../services/pointService";
-import { BuyPointPayload, BuyPointResponse } from "../types/pointTypes";
+import { pointService } from "@/features/point/services/pointService";
+import {
+  BuyPointPayload,
+  BuyPointResponse,
+} from "@/features/point/types/pointTypes";
 
 export const useCheckoutPoint = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,7 +27,8 @@ export const useCheckoutPoint = () => {
       }
     } catch (err: any) {
       const errMsg =
-        err?.response?.data?.message || "Terjadi kesalahan saat memproses pembayaran.";
+        err?.response?.data?.message ||
+        "Terjadi kesalahan saat memproses pembayaran.";
       setError(errMsg);
       return null;
     } finally {

@@ -3,8 +3,8 @@
 
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import { useTransactionList } from "../hooks/useTransactionList";
-import { TransactionItem } from "../types/transactionTypes";
+import { useTransactionList } from "@/features/transaction/hooks/useTransactionList";
+import { TransactionItem } from "@/features/transaction/types/transactionTypes";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -61,7 +61,6 @@ export const TransactionListView = () => {
     useTransactionList();
 
   const handleDetailClick = (item: TransactionItem) => {
-    // Navigasi menggunakan UUID sesuai permintaan sebelumnya
     router.push(`/transaction/payment?id=${item.id}`);
   };
 

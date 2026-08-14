@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { deleteCookie } from "cookies-next";
-import { getProfileApi } from "../services/profileApi";
-import { UserProfile } from "../types/profile.types";
+import { getProfileApi } from "@/features/profile/services/profileApi";
+import { UserProfile } from "@/features/profile/types/profileTypes";
 
 export const useProfile = () => {
   const router = useRouter();

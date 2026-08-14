@@ -4,9 +4,9 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { usePoints } from "../hooks/usePoints";
-import { useCheckoutPoint } from "../hooks/useCheckoutPoint";
-import { PaymentMethodOption } from "../types/pointTypes";
+import { usePoints } from "@/features/point/hooks/usePoints";
+import { useCheckoutPoint } from "@/features/point/hooks/useCheckoutPoint";
+import { PaymentMethodOption } from "@/features/point/types/pointTypes";
 
 const PAYMENT_METHODS: PaymentMethodOption[] = [
   {

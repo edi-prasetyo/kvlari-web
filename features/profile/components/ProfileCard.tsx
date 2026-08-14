@@ -1,7 +1,7 @@
 // features/profile/components/ProfileCard.tsx
 "use client";
 
-import { useProfile } from "../hooks/useProfile";
+import { useProfile } from "@/features/profile/hooks/useProfile";
 
 export const ProfileCard = () => {
   const { profile, loading, error, logout } = useProfile();

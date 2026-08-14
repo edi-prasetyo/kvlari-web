@@ -1,4 +1,4 @@
-// features/profile/types/profile.types.ts
+// features/profile/types/profileTypes.ts
 
 export interface PointUser {
   id: number;

@@ -19,7 +19,6 @@ export default function CheckoutPage() {
     handleBooking,
   } = useCheckout();
 
-  // Otomatis isi nama dan nomor telepon saat data profile (user) tersedia
   useEffect(() => {
     if (user) {
       if (user.name) setContactName(user.name);

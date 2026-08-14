@@ -1,4 +1,3 @@
-// app/(booking)/booking/success/page.tsx
 "use client";
 
 import { Suspense } from "react";
@@ -9,7 +8,6 @@ function SuccessContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("id");
 
-  // Mock / dummy data fallback sesuai struktur response backend
   const successData = {
     booking_id: Number(bookingId) || 1,
     booking_code: "BK-LC1YPIDA",
