@@ -41,9 +41,7 @@ export const RouteCard = ({ route }: RouteCardProps) => {
   };
 
   const handleSelectStop = (selectedDestinationStop: RouteStop) => {
-    const originStop =
-      sortedStops.length > 0 ? sortedStops[0] : selectedDestinationStop;
-    setBookingSelection(route, originStop, selectedDestinationStop);
+    setBookingSelection(route, route, selectedDestinationStop);
     router.push(`/schedule?id=${route.id}`);
   };
 
@@ -172,85 +170,39 @@ export const RouteCard = ({ route }: RouteCardProps) => {
                 Klik halte untuk memilih tujuan
               </p>
 
-              <div className="relative pl-6 space-y-3">
-                {/* Garis Vertikal Hubungan Antar Halte */}
-                <div className="absolute left-[11px] top-4 bottom-6 w-0.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-emerald-500 rounded-full" />
+              {sortedStops.map((stop) => (
+                <button
+                  key={stop.id}
+                  type="button"
+                  onClick={() => handleSelectStop(stop)}
+                  className="w-full text-left flex items-center justify-between p-3.5 rounded-xl border border-gray-100 hover:border-blue-200 bg-white hover:bg-blue-50/40 active:scale-[0.98] transition-all duration-150 group shadow-2xs hover:shadow-md"
+                >
+                  <div className="flex-1 pr-3">
+                    <p className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                      {stop.city.name}
+                    </p>
+                    <p className="text-xs text-gray-500 line-clamp-1">
+                      {stop.city.description}
+                    </p>
+                  </div>
 
-                {sortedStops.map((stop, index) => {
-                  const isFirst = index === 0;
-                  const isLast = index === sortedStops.length - 1;
-
-                  return (
-                    <button
-                      key={stop.id}
-                      type="button"
-                      onClick={() => handleSelectStop(stop)}
-                      className="relative w-full text-left flex items-center justify-between p-3.5 rounded-xl border border-gray-100 hover:border-blue-200 bg-white hover:bg-blue-50/40 active:scale-[0.98] transition-all duration-150 group shadow-2xs hover:shadow-md"
+                  <div className="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-blue-600 text-gray-400 group-hover:text-white flex items-center justify-center transition-all">
+                    <svg
+                      className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      {/* Node Bullet Point */}
-                      <div
-                        className={`absolute -left-[20px] w-4 h-4 rounded-full border-2 bg-white flex items-center justify-center transition-all group-hover:scale-125 ${
-                          isFirst
-                            ? "border-blue-600 ring-4 ring-blue-100"
-                            : isLast
-                              ? "border-emerald-600 ring-4 ring-emerald-100"
-                              : "border-gray-300 group-hover:border-blue-500"
-                        }`}
-                      >
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full ${
-                            isFirst
-                              ? "bg-blue-600"
-                              : isLast
-                                ? "bg-emerald-600"
-                                : "bg-gray-300 group-hover:bg-blue-500"
-                          }`}
-                        />
-                      </div>
-
-                      {/* Info Nama & Deskripsi Kota */}
-                      <div className="flex-1 pr-3">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
-                            {stop.city.name}
-                          </p>
-
-                          {isFirst && (
-                            <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-                              Keberangkatan
-                            </span>
-                          )}
-                          {isLast && (
-                            <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                              Akhir Rute
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-gray-500 line-clamp-1">
-                          {stop.city.description}
-                        </p>
-                      </div>
-
-                      {/* Icon Arrow */}
-                      <div className="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-blue-600 text-gray-400 group-hover:text-white flex items-center justify-center transition-all">
-                        <svg
-                          className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         </div>

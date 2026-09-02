@@ -30,7 +30,7 @@ privateApi.interceptors.response.use(
       deleteCookie("refresh_token");
 
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.replace("/login");
       }
     }
     return Promise.reject(error);

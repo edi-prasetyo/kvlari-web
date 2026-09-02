@@ -4,11 +4,11 @@ import { TransportRoute, RouteStop } from "@/features/home/types/transport";
 
 interface RouteState {
   selectedRoute: TransportRoute | null;
-  origin: RouteStop | null;
+  origin: TransportRoute | null;
   destination: RouteStop | null;
   setBookingSelection: (
     route: TransportRoute,
-    origin: RouteStop,
+    origin: TransportRoute,
     destination: RouteStop,
   ) => void;
   clearSelection: () => void;

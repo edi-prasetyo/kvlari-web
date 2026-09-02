@@ -5,7 +5,7 @@ import { setCookie } from "cookies-next";
 import { loginApi } from "@/features/auth/services/authApi";
 import { LoginPayload } from "@/features/auth/types/authTypes";
 
-export const useLogin = () => {
+export const useLogin = (redirectTo?: string) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,14 +22,10 @@ export const useLogin = () => {
         path: "/",
       });
 
-      // Simpan refresh_token ke Cookie
       setCookie("refresh_token", data.refresh_token, {
         path: "/",
       });
 
-      // PERBAIKAN:
-      // 1. Utamakan data.user.is_verified daripada root data.is_verified
-      // 2. Konversi angka (0/1) ke boolean
       const rawVerifiedState = data.user?.is_verified ?? data.is_verified;
       const isVerified = Number(rawVerifiedState) === 1;
 
@@ -47,7 +43,7 @@ export const useLogin = () => {
           `/verify?email=${encodeURIComponent(emailOrPhone)}&expires_at=${encodeURIComponent(expiresAt)}`,
         );
       } else {
-        router.push("/profile");
+        router.push(redirectTo || "/profile");
       }
     } catch (err: any) {
       const errorMessage =

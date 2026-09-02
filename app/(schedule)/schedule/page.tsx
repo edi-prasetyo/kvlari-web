@@ -73,11 +73,21 @@ function SchedulePageContent() {
     );
   }
 
-  const originName = origin?.city?.name || "Halte Keberangkatan";
-  const originDesc = origin?.city?.description;
+  const isMorningSession = activeType === "morning";
 
-  const destinationName = destination?.city?.name || "Halte Tujuan";
-  const destinationDesc = destination?.city?.description;
+  const originName = isMorningSession
+    ? origin?.name || "Halte Keberangkatan"
+    : destination?.city?.name || "Halte Tujuan";
+
+  const originDesc = isMorningSession ? origin?.description : undefined;
+
+  const destinationName = isMorningSession
+    ? destination?.city?.name || "Halte Tujuan"
+    : origin?.name || "Halte Keberangkatan";
+
+  const destinationDesc = isMorningSession
+    ? destination?.city?.description
+    : undefined;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -215,6 +225,22 @@ function SchedulePageContent() {
                 console.log("1. Schedule dipilih:", selected);
 
                 try {
+                  const isMorning = selected.schedule_type === "morning";
+
+                  const originName = isMorning
+                    ? origin?.name || "Halte Keberangkatan"
+                    : destination?.city?.name || "Halte Tujuan";
+
+                  const originDesc = isMorning ? origin?.description : undefined;
+
+                  const destinationName = isMorning
+                    ? destination?.city?.name || "Halte Tujuan"
+                    : origin?.name || "Halte Keberangkatan";
+
+                  const destinationDesc = isMorning
+                    ? destination?.city?.description
+                    : undefined;
+
                   const queryParams = new URLSearchParams({
                     product_id: String(routeDetail?.product_id || 1),
 

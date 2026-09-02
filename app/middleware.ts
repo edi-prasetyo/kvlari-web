@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // 1. Tentukan halaman-halaman yang membutuhkan autentikasi (Protected Routes)
-const protectedRoutes = ["/profile", "/history"];
+const protectedRoutes = ["/profile", "/history", "/checkout", "/points/checkout"];
 
 // 2. Tentukan halaman publik/auth (user yang sudah login tidak perlu masuk ke sini lagi)
 const authRoutes = ["/login", "/register"];
@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Ambil token autentikasi dari cookies (sesuaikan key cookie dengan yang Anda gunakan saat login)
-  const token = request.cookies.get("token")?.value;
+  const token = request.cookies.get("access_token")?.value;
 
   // Cek status halaman
   const isProtectedRoute = protectedRoutes.some((route) =>
@@ -23,8 +23,8 @@ export function middleware(request: NextRequest) {
   // KONDISI 1: User belum login & mencoba mengakses halaman terproteksi
   if (isProtectedRoute && !token) {
     const loginUrl = new URL("/login", request.url);
-    // Simpan URL asal di query parameter agar bisa di-redirect balik setelah login berhasil
-    loginUrl.searchParams.set("from", pathname);
+    const fullPath = pathname + (request.nextUrl.search || "");
+    loginUrl.searchParams.set("from", fullPath);
     return NextResponse.redirect(loginUrl);
   }
 
