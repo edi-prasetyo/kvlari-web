@@ -5,27 +5,37 @@ import { useState, useMemo } from "react";
 import { useMyBookings } from "@/features/history/hooks/useMyBookings";
 import { HistoryCard } from "@/features/history/components/HistoryCard";
 
-type TabStatus = "scheduled" | "completed";
+type TabStatus = "scheduled" | "completed" | "cancelled";
 
 export const HistoryList = () => {
   const [activeTab, setActiveTab] = useState<TabStatus>("scheduled");
   const { bookings, pagination, isLoading, error, page, setPage } =
     useMyBookings(1);
 
-  // Hitung jumlah item per status untuk badge pada Tab
   const counts = useMemo(() => {
-    if (!bookings) return { scheduled: 0, completed: 0 };
+    if (!bookings) return { scheduled: 0, completed: 0, cancelled: 0 };
     return {
-      scheduled: bookings.filter((b) => b.status.toLowerCase() === "scheduled")
-        .length,
+      scheduled: bookings.filter(
+        (b) =>
+          b.status.toLowerCase() === "scheduled" ||
+          b.status.toLowerCase() === "pending",
+      ).length,
       completed: bookings.filter((b) => b.status.toLowerCase() === "completed")
+        .length,
+      cancelled: bookings.filter((b) => b.status.toLowerCase() === "cancelled")
         .length,
     };
   }, [bookings]);
 
-  // Filter daftar booking sesuai tab aktif
   const filteredBookings = useMemo(() => {
     if (!bookings) return [];
+    if (activeTab === "scheduled") {
+      return bookings.filter(
+        (booking) =>
+          booking.status.toLowerCase() === "scheduled" ||
+          booking.status.toLowerCase() === "pending",
+      );
+    }
     return bookings.filter(
       (booking) => booking.status.toLowerCase() === activeTab,
     );
@@ -76,6 +86,27 @@ export const HistoryList = () => {
             {counts.completed}
           </span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("cancelled")}
+          className={`flex-1 py-2.5 px-4 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 ${
+            activeTab === "cancelled"
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <span>Dibatalkan</span>
+          <span
+            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+              activeTab === "cancelled"
+                ? "bg-rose-50 text-rose-600"
+                : "bg-slate-200/80 text-slate-600"
+            }`}
+          >
+            {counts.cancelled}
+          </span>
+        </button>
       </div>
 
       {/* Loading Skeleton */}
@@ -105,17 +136,25 @@ export const HistoryList = () => {
       {!isLoading && !error && filteredBookings.length === 0 && (
         <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-200 p-8 space-y-3">
           <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl">
-            {activeTab === "scheduled" ? "📅" : "🏁"}
+            {activeTab === "scheduled"
+              ? "📅"
+              : activeTab === "completed"
+                ? "🏁"
+                : "🚫"}
           </div>
           <h3 className="text-lg font-bold text-slate-800">
             {activeTab === "scheduled"
               ? "Tidak Ada Perjalanan Terjadwal"
-              : "Belum Ada Perjalanan Selesai"}
+              : activeTab === "completed"
+                ? "Belum Ada Perjalanan Selesai"
+                : "Tidak Ada Pemesanan Dibatalkan"}
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
             {activeTab === "scheduled"
               ? "Anda tidak memiliki tiket perjalanan aktif saat ini."
-              : "Riwayat tiket perjalanan yang telah selesai akan muncul di sini."}
+              : activeTab === "completed"
+                ? "Riwayat tiket perjalanan yang telah selesai akan muncul di sini."
+                : "Daftar pemesanan yang dibatalkan akan muncul di sini."}
           </p>
         </div>
       )}

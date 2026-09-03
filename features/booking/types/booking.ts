@@ -15,7 +15,7 @@ export interface BookingPayload {
   date: string; // YYYY-MM-DD
   origin: string;
   destination: string;
-  payment_method: string;
+  payment_method_id: number;
 }
 
 export interface BookingResponse {

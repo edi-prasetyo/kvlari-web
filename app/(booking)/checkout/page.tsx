@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from "react";
 import { useCheckout } from "@/features/booking/hooks/useCheckout";
 import { CheckoutSummary } from "@/features/booking/components/CheckoutSummary";
+import { usePaymentMethods } from "@/features/booking/hooks/usePaymentMethods";
 
 function CheckoutPageContent() {
   const {
@@ -11,13 +12,16 @@ function CheckoutPageContent() {
     setContactName,
     contactPhone,
     setContactPhone,
-    paymentMethod,
-    setPaymentMethod,
+    paymentMethodId,
+    setPaymentMethodId,
     isSubmitting,
     errorMessage,
     bookingDetails,
     handleBooking,
   } = useCheckout();
+
+  const { paymentMethods, loading: loadingPaymentMethods } =
+    usePaymentMethods();
 
   useEffect(() => {
     if (user) {
@@ -106,9 +110,12 @@ function CheckoutPageContent() {
             origin={bookingDetails.origin}
             destination={bookingDetails.destination}
             date={bookingDetails.date}
-            paymentMethod={paymentMethod}
-            setPaymentMethod={setPaymentMethod}
+            paymentMethodId={paymentMethodId}
+            setPaymentMethodId={setPaymentMethodId}
             pointBalance={user?.point_user?.balance ?? 0}
+            paymentMethods={paymentMethods}
+            loadingPaymentMethods={loadingPaymentMethods}
+            price={bookingDetails.price}
           />
 
           {/* Action Button */}

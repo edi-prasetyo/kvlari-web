@@ -25,7 +25,7 @@ export interface BookingHistoryItem {
   payment_method: string;
   payment_status: "paid" | "unpaid" | "failed" | "pending" | string;
   paid_at: string | null;
-  status: "scheduled" | "completed" | "cancelled" | string;
+  status: "pending" | "scheduled" | "completed" | "cancelled" | string;
   is_read: number;
   created_at: string;
   updated_at: string;
@@ -109,7 +109,7 @@ export interface BookingDetail {
   payment_method: string;
   payment_status: "paid" | "unpaid" | "pending" | string;
   paid_at: string | null;
-  status: "scheduled" | "completed" | "cancelled" | string;
+  status: "pending" | "scheduled" | "completed" | "cancelled" | string;
   is_read: number;
   created_at: string;
   updated_at: string;

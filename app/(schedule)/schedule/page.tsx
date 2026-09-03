@@ -253,6 +253,8 @@ function SchedulePageContent() {
                     origin: originName || "",
 
                     destination: destinationName || "",
+
+                    price: String(routeDetail.price),
                   });
 
                   const targetUrl = `/checkout?${queryParams.toString()}`;

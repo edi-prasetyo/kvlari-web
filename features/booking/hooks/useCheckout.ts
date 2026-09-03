@@ -20,11 +20,12 @@ export const useCheckout = () => {
   const date = searchParams.get("date") || "2026-07-02";
   const origin = searchParams.get("origin") || "Bogor";
   const destination = searchParams.get("destination") || "Bandung";
+  const price = Number(searchParams.get("price")) || 0;
 
   // Pre-fill state dengan data user dari Auth Context
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("point_balance");
+  const [paymentMethodId, setPaymentMethodId] = useState<number | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export const useCheckout = () => {
       date: date,
       origin: origin,
       destination: destination,
-      payment_method: paymentMethod,
+      payment_method_id: paymentMethodId ?? 0,
     };
 
     try {
@@ -80,8 +81,8 @@ export const useCheckout = () => {
     setContactName,
     contactPhone,
     setContactPhone,
-    paymentMethod,
-    setPaymentMethod,
+    paymentMethodId,
+    setPaymentMethodId,
     isSubmitting,
     errorMessage,
     bookingDetails: {
@@ -89,6 +90,7 @@ export const useCheckout = () => {
       origin,
       destination,
       scheduleId,
+      price,
     },
     handleBooking,
   };
