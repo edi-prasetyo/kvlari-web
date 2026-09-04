@@ -56,7 +56,11 @@ export const CheckoutSummary = ({
   loadingPaymentMethods = false,
   price = 0,
 }: CheckoutSummaryProps) => {
-  const selectedPayment = paymentMethods.find(
+  const availablePaymentMethods = paymentMethods.filter(
+    (method) => method.is_booking_payment,
+  );
+
+  const selectedPayment = availablePaymentMethods.find(
     (method) => method.id === paymentMethodId,
   );
 
@@ -72,7 +76,7 @@ export const CheckoutSummary = ({
       );
     }
 
-    if (!paymentMethods.length) {
+    if (!availablePaymentMethods.length) {
       return (
         <div className="text-xs text-slate-400 py-2">
           Tidak ada metode pembayaran tersedia.
@@ -80,7 +84,7 @@ export const CheckoutSummary = ({
       );
     }
 
-    return paymentMethods.map((method) => {
+    return availablePaymentMethods.map((method) => {
       const isSelected = paymentMethodId === method.id;
       const iconUrl = normalizeIconUrl(method.icon);
 

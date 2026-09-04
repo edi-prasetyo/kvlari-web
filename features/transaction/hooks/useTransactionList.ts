@@ -15,7 +15,7 @@ export const useTransactionList = (initialPage: number = 1) => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await transactionService.getPointTransactions(currentPage);
+      const res = await transactionService.getMyTransactions(currentPage);
       if (res.success) {
         setData(res.data);
       } else {

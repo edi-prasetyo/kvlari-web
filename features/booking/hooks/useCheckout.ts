@@ -62,7 +62,7 @@ export const useCheckout = () => {
       setIsSubmitting(true);
       const res = await createBooking(payload);
       if (res.success) {
-        router.push(`/booking/success?id=${res.data.booking_id}`);
+        router.push(`/payment?transaction_id=${res.data.transaction_id}`);
       }
     } catch (err: any) {
       setErrorMessage(

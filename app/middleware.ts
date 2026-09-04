@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // 1. Tentukan halaman-halaman yang membutuhkan autentikasi (Protected Routes)
-const protectedRoutes = ["/profile", "/history", "/checkout", "/points/checkout"];
+const protectedRoutes = ["/profile", "/history", "/checkout", "/points/checkout", "/payment"];
 
 // 2. Tentukan halaman publik/auth (user yang sudah login tidak perlu masuk ke sini lagi)
 const authRoutes = ["/login", "/register"];

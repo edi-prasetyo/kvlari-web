@@ -1,10 +1,13 @@
 // features/transaction/components/TransactionListView.tsx
 "use client";
 
+import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { useTransactionList } from "@/features/transaction/hooks/useTransactionList";
 import { TransactionItem } from "@/features/transaction/types/transactionTypes";
+
+type TabStatus = "pending" | "success" | "cancelled";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -15,7 +18,8 @@ const formatRupiah = (amount: number) => {
 };
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("id-ID", {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -57,11 +61,34 @@ const getStatusBadge = (status: string) => {
 
 export const TransactionListView = () => {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabStatus>("pending");
   const { transactions, pagination, page, setPage, isLoading, error, refetch } =
     useTransactionList();
 
+  const counts = {
+    pending: transactions.filter((t) => t.status.toLowerCase() === "pending")
+      .length,
+    success: transactions.filter((t) =>
+      ["completed", "paid"].includes(t.status.toLowerCase()),
+    ).length,
+    cancelled: transactions.filter((t) =>
+      ["cancelled", "canceled", "failed", "expired"].includes(
+        t.status.toLowerCase(),
+      ),
+    ).length,
+  };
+
+  const filteredTransactions = transactions.filter((item) => {
+    const status = item.status.toLowerCase();
+    if (activeTab === "pending") return status === "pending";
+    if (activeTab === "success") return ["completed", "paid"].includes(status);
+    if (activeTab === "cancelled")
+      return ["cancelled", "canceled", "failed", "expired"].includes(status);
+    return true;
+  });
+
   const handleDetailClick = (item: TransactionItem) => {
-    router.push(`/transaction/payment?id=${item.id}`);
+    router.push(`/transaction/${item.id}`);
   };
 
   return (
@@ -73,7 +100,7 @@ export const TransactionListView = () => {
             Riwayat Transaksi
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Daftar transaksi pembelian poin akun Anda.
+            Daftar semua transaksi pembelian poin dan booking.
           </p>
         </div>
         <button
@@ -84,6 +111,36 @@ export const TransactionListView = () => {
         >
           <Icon icon="mdi:reload" width={20} height={20} />
         </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60">
+        {[
+          { key: "pending", label: "Pending", count: counts.pending },
+          { key: "success", label: "Success", count: counts.success },
+          { key: "cancelled", label: "Cancel", count: counts.cancelled },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as TabStatus)}
+            className={`flex-1 py-2.5 px-4 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 ${
+              activeTab === tab.key
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            <span>{tab.label}</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                activeTab === tab.key
+                  ? "bg-blue-50 text-blue-600"
+                  : "bg-slate-200/80 text-slate-600"
+              }`}
+            >
+              {tab.count}
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* Loading Skeleton */}
@@ -122,24 +179,24 @@ export const TransactionListView = () => {
       )}
 
       {/* Empty State */}
-      {!isLoading && !error && transactions.length === 0 && (
+      {!isLoading && !error && filteredTransactions.length === 0 && (
         <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center space-y-3">
           <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-400 text-xl">
             📋
           </div>
           <h3 className="text-sm font-bold text-slate-800">
-            Belum Ada Transaksi
+            Tidak Ada Transaksi
           </h3>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
-            Anda belum melakukan transaksi pembelian poin saat ini.
+            {`Tidak ada transaksi dengan status ${activeTab}.`}
           </p>
         </div>
       )}
 
       {/* List Transaksi */}
-      {!isLoading && !error && transactions.length > 0 && (
+      {!isLoading && !error && filteredTransactions.length > 0 && (
         <div className="space-y-3">
-          {transactions.map((item) => (
+          {filteredTransactions.map((item) => (
             <div
               key={item.id}
               onClick={() => handleDetailClick(item)}

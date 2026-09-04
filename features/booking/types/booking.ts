@@ -23,7 +23,10 @@ export interface BookingResponse {
   message: string;
   data: {
     booking_id: string;
-    status: string;
-    total_amount: number;
+    transaction_id: number;
+    booking_code: string;
+    total_price: number;
+    payment_url: string | null;
+    redirect_type: string;
   };
 }

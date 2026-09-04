@@ -13,7 +13,7 @@ export interface PointPackage {
 export interface BuyPointPayload {
   product_id: number;
   point_id: number;
-  payment_method: string;
+  payment_method_id: number;
 }
 
 export interface TransactionDetails {
@@ -36,6 +36,7 @@ export interface ProductDetails {
 }
 
 export interface BuyPointData {
+  transaction_id: number;
   transaction: TransactionDetails;
   product: ProductDetails;
   point: PointPackage;
@@ -45,11 +46,4 @@ export interface BuyPointResponse {
   success: boolean;
   message: string;
   data: BuyPointData;
-}
-
-export interface PaymentMethodOption {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
 }

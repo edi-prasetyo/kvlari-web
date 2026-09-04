@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { pointService } from "@/features/point/services/pointService";
 import {
   BuyPointPayload,
@@ -9,6 +10,7 @@ import {
 } from "@/features/point/types/pointTypes";
 
 export const useCheckoutPoint = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<BuyPointResponse | null>(null);
@@ -20,6 +22,7 @@ export const useCheckoutPoint = () => {
       const res = await pointService.buyPointPackage(payload);
       if (res.success) {
         setResult(res);
+        router.push(`/payment?transaction_id=${res.data.transaction_id}`);
         return res;
       } else {
         setError(res.message || "Gagal membuat transaksi pembelian poin.");

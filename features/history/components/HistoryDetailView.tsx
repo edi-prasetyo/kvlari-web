@@ -63,6 +63,8 @@ export const HistoryDetailView = ({ id }: { id: string }) => {
   // QR Code dari transaksi utama
   const primaryTransaction = booking.transactions?.[0];
   const qrCodeUrl = primaryTransaction?.qr_code;
+  const isPendingPayment = booking.payment_status === "pending";
+  const paymentTransactionId = primaryTransaction?.id;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 p-4 md:p-6">
@@ -249,6 +251,26 @@ export const HistoryDetailView = ({ id }: { id: string }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        {isPendingPayment && paymentTransactionId && (
+          <button
+            onClick={() =>
+              router.push(`/payment?transaction_id=${paymentTransactionId}`)
+            }
+            className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-colors shadow-md shadow-blue-500/20"
+          >
+            Bayar Sekarang
+          </button>
+        )}
+        <button
+          onClick={() => router.push("/history")}
+          className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-colors shadow-md shadow-slate-900/10"
+        >
+          Kembali ke Riwayat
+        </button>
       </div>
     </div>
   );

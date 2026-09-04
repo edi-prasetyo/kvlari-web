@@ -1,21 +1,12 @@
 // features/point/components/PointCheckoutView.tsx
 "use client";
 
-import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { usePoints } from "@/features/point/hooks/usePoints";
 import { useCheckoutPoint } from "@/features/point/hooks/useCheckoutPoint";
-import { PaymentMethodOption } from "@/features/point/types/pointTypes";
-
-const PAYMENT_METHODS: PaymentMethodOption[] = [
-  {
-    id: "transfer_bank",
-    name: "Transfer Bank",
-    description: "Bayar via Transfer Bank",
-    icon: "mingcute:bank-card-line",
-  },
-];
+import { usePaymentMethods } from "@/features/booking/hooks/usePaymentMethods";
+import { PaymentMethod } from "@/features/booking/types/payment";
 
 const formatRupiah = (amount: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -23,6 +14,29 @@ const formatRupiah = (amount: number) => {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(amount);
+};
+
+const normalizeIconUrl = (icon: string | null | undefined): string | undefined => {
+  if (!icon) return undefined;
+
+  if (icon.startsWith("http")) {
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+      const apiUrl = new URL(apiBase);
+      const iconUrl = new URL(icon);
+
+      if (iconUrl.origin !== apiUrl.origin) {
+        iconUrl.host = apiUrl.host;
+        iconUrl.protocol = apiUrl.protocol;
+      }
+
+      return iconUrl.toString();
+    } catch {
+      return icon;
+    }
+  }
+
+  return icon;
 };
 
 export const PointCheckoutView = () => {
@@ -34,9 +48,20 @@ export const PointCheckoutView = () => {
 
   const { packages, isLoading: isLoadingPackages } = usePoints();
   const { buyPoint, isLoading: isSubmitting, error } = useCheckoutPoint();
+  const { paymentMethods, loading: loadingPaymentMethods } =
+    usePaymentMethods();
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("transfer_bank");
+  const availablePaymentMethods = paymentMethods.filter(
+    (method) => method.payment_type !== "point_balance",
+  );
+
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!selectedPaymentMethodId && availablePaymentMethods.length > 0) {
+      setSelectedPaymentMethodId(availablePaymentMethods[0].id);
+    }
+  }, [availablePaymentMethods, selectedPaymentMethodId]);
 
   const selectedPackage = packages.find((item) => item.id === selectedPointId);
 
@@ -46,16 +71,10 @@ export const PointCheckoutView = () => {
     const payload = {
       product_id: selectedPackage.product_id,
       point_id: selectedPackage.id,
-      payment_method: selectedPaymentMethod,
+      payment_method_id: selectedPaymentMethodId ?? 0,
     };
 
-    const res = await buyPoint(payload);
-
-    if (res?.success && res.data?.transaction) {
-      const { id, uuid } = res.data.transaction;
-      // Redirect membawa ID (untuk dipanggil ke API) dan UUID (untuk tampilan URL)
-      router.push(`/transaction/payment?id=${id}`);
-    }
+    await buyPoint(payload);
   };
 
   if (isLoadingPackages) {
@@ -95,6 +114,12 @@ export const PointCheckoutView = () => {
 
   const finalPrice = selectedPackage.price - selectedPackage.discount;
 
+  const selectedPayment = availablePaymentMethods.find(
+    (method) => method.id === selectedPaymentMethodId,
+  );
+  const adminFee = selectedPayment?.admin_fee || 0;
+  const totalPayment = finalPrice + adminFee;
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Ringkasan Pesanan */}
@@ -128,49 +153,99 @@ export const PointCheckoutView = () => {
         </div>
       </div>
 
+      {/* Rincian Harga */}
+      <div className="bg-white rounded-3xl border border-slate-100 p-6 space-y-3 shadow-sm">
+        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+          Rincian Harga
+        </h2>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-600">Harga Paket</span>
+          <span className="font-semibold text-slate-900">
+            {formatRupiah(finalPrice)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-600">Admin Fee</span>
+          <span className="font-semibold text-slate-900">
+            {formatRupiah(adminFee)}
+          </span>
+        </div>
+        <div className="border-t border-slate-200 pt-3 flex items-center justify-between text-sm">
+          <span className="font-bold text-slate-900">Total Pembayaran</span>
+          <span className="font-extrabold text-blue-600 text-base">
+            {formatRupiah(totalPayment)}
+          </span>
+        </div>
+      </div>
+
       {/* Pilih Metode Pembayaran */}
       <div className="bg-white rounded-3xl border border-slate-100 p-6 space-y-4 shadow-sm">
         <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
           2. Pilih Metode Pembayaran
         </h2>
 
-        <div className="space-y-3">
-          {PAYMENT_METHODS.map((method) => {
-            const isSelected = selectedPaymentMethod === method.id;
-            return (
-              <div
-                key={method.id}
-                onClick={() => setSelectedPaymentMethod(method.id)}
-                className={`cursor-pointer p-4 rounded-2xl border transition-all flex items-center justify-between ${
-                  isSelected
-                    ? "border-blue-600 bg-blue-50/30 ring-2 ring-blue-600/10"
-                    : "border-slate-100 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">
-                    <Icon icon={method.icon} />
-                  </span>
-                  <div>
-                    <p className="font-bold text-xs text-slate-900">
-                      {method.name}
-                    </p>
-                    <p className="text-[11px] text-slate-400">
-                      {method.description}
-                    </p>
+        {loadingPaymentMethods ? (
+          <div className="text-xs text-slate-400 py-2">
+            Memuat metode pembayaran...
+          </div>
+        ) : availablePaymentMethods.length === 0 ? (
+          <div className="text-xs text-slate-400 py-2">
+            Tidak ada metode pembayaran tersedia.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {availablePaymentMethods.map((method) => {
+              const isSelected = selectedPaymentMethodId === method.id;
+              return (
+                <div
+                  key={method.id}
+                  onClick={() => setSelectedPaymentMethodId(method.id)}
+                  className={`cursor-pointer p-4 rounded-2xl border transition-all flex items-center justify-between ${
+                    isSelected
+                      ? "border-blue-600 bg-blue-50/30 ring-2 ring-blue-600/10"
+                      : "border-slate-100 hover:border-slate-300"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center">
+                      {method.icon ? (
+                        <img
+                          src={normalizeIconUrl(method.icon)}
+                          alt={method.name}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <span
+                          className="text-white font-bold text-xs"
+                          style={{ backgroundColor: method.color }}
+                        >
+                          {method.name.charAt(0)}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-bold text-xs text-slate-900">
+                        {method.name}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        {method.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      isSelected ? "border-blue-600 bg-blue-600" : "border-slate-300"
+                    }`}
+                  >
+                    {isSelected && (
+                      <div className="w-2 h-2 rounded-full bg-white" />
+                    )}
                   </div>
                 </div>
-                <input
-                  type="radio"
-                  name="payment_method"
-                  checked={isSelected}
-                  onChange={() => setSelectedPaymentMethod(method.id)}
-                  className="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500"
-                />
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Error Message */}
@@ -185,7 +260,7 @@ export const PointCheckoutView = () => {
         <div>
           <p className="text-xs text-slate-400">Total Pembayaran</p>
           <p className="text-lg font-black text-slate-900">
-            {formatRupiah(finalPrice)}
+            {formatRupiah(totalPayment)}
           </p>
         </div>
 
@@ -201,3 +276,4 @@ export const PointCheckoutView = () => {
     </div>
   );
 };
+
