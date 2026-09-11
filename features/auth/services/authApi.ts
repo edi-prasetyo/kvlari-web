@@ -10,6 +10,8 @@ import {
   VerifyOtpResponse,
   ResendOtpRequest,
   ResendOtpResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
 } from "@/features/auth/types/authTypes";
 
 export const loginApi = async (
@@ -44,6 +46,16 @@ export const resendOtpApi = async (
 ): Promise<ResendOtpResponse> => {
   const response = await publicApi.post<ResendOtpResponse>(
     "/resend-otp",
+    payload,
+  );
+  return response.data;
+};
+
+export const forgotPasswordApi = async (
+  payload: ForgotPasswordRequest,
+): Promise<ForgotPasswordResponse> => {
+  const response = await publicApi.post<ForgotPasswordResponse>(
+    "/forgot-password",
     payload,
   );
   return response.data;

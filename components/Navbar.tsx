@@ -2,28 +2,38 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { getCookie, deleteCookie } from "cookies-next";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Cek apakah user sedang login setiap kali route berubah
   useEffect(() => {
     const token = getCookie("access_token");
+    const name = getCookie("user_name");
     setIsAuth(!!token);
+    setUserName((typeof name === "string" ? name : "") || "");
   }, [pathname]);
 
   const handleLogout = () => {
     deleteCookie("access_token");
     deleteCookie("refresh_token");
+    deleteCookie("user_name");
     setIsAuth(false);
+    setUserName("");
     router.push("/login");
   };
+
+  const navItemClass = (href: string) =>
+    `block text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors`;
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm text-gray-800">
@@ -36,73 +46,116 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex space-x-6 items-center text-sm font-medium">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/"
-              className={`${pathname === "/" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
+              className={`${pathname === "/" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
             >
               Beranda
             </Link>
+            <Link
+              href="/privacy"
+              className={`${pathname === "/privacy" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
+            >
+              Kebijakan Privasi
+            </Link>
+            <Link
+              href="/term-of-service"
+              className={`${pathname === "/term-of-service" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
+            >
+              Syarat dan Ketentuan
+            </Link>
+            <Link
+              href="/about-us"
+              className={`${pathname === "/about-us" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
+            >
+              Tentang Kami
+            </Link>
+            <Link
+              href="/schedule"
+              className={`${pathname === "/schedule" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
+            >
+              Cek Jadwal
+            </Link>
 
-            {isAuth && (
-              <Link
-                href="/profile"
-                className={`${pathname === "/profile" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
-              >
-                Profile Saya
-              </Link>
-            )}
-            {isAuth && (
-              <Link
-                href="/history"
-                className={`${pathname === "/history" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
-              >
-                Riwayat Booking
-              </Link>
-            )}
-            {isAuth && (
-              <Link
-                href="/points"
-                className={`${pathname === "/points" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
-              >
-                Top Up Point
-              </Link>
-            )}
-            {isAuth && (
-              <Link
-                href="/transaction"
-                className={`${pathname === "/transaction" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"}`}
-              >
-                Riwayat Transaksi
-              </Link>
-            )}
-          </div>
-
-          {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-3 text-sm">
-            {isAuth ? (
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-md transition"
-              >
-                Logout
-              </button>
-            ) : (
+            {!isAuth && (
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium"
+                  className={`${pathname === "/login" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
                 >
                   Masuk
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition shadow-sm"
+                  className={`${pathname === "/register" ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"} text-sm font-medium transition-colors`}
                 >
                   Daftar
                 </Link>
               </>
+            )}
+
+            {isAuth && (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none"
+                >
+                  {userName || "Akun"}
+                  <svg
+                    className={`ml-2 -mr-1 h-4 w-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-100 py-1 z-50">
+                    <Link
+                      href="/profile"
+                      onClick={() => setDropdownOpen(false)}
+                      className={navItemClass("/profile")}
+                    >
+                      Profile Saya
+                    </Link>
+                    <Link
+                      href="/history"
+                      onClick={() => setDropdownOpen(false)}
+                      className={navItemClass("/history")}
+                    >
+                      Riwayat Booking
+                    </Link>
+                    <Link
+                      href="/points"
+                      onClick={() => setDropdownOpen(false)}
+                      className={navItemClass("/points")}
+                    >
+                      Top Up Point
+                    </Link>
+                    <Link
+                      href="/transaction"
+                      onClick={() => setDropdownOpen(false)}
+                      className={navItemClass("/transaction")}
+                    >
+                      Riwayat Transaksi
+                    </Link>
+                    <div className="border-t border-gray-100 my-1" />
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full text-left text-red-600 hover:bg-red-50 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -143,82 +196,136 @@ export const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-2">
+        <div className="md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-4 space-y-1">
           <Link
             href="/"
             onClick={() => setIsOpen(false)}
-            className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
+            className={navItemClass("/")}
           >
             Beranda
           </Link>
+          <Link
+            href="/privacy"
+            onClick={() => setIsOpen(false)}
+            className={navItemClass("/privacy")}
+          >
+            Kebijakan Privasi
+          </Link>
+          <Link
+            href="/term-of-service"
+            onClick={() => setIsOpen(false)}
+            className={navItemClass("/term-of-service")}
+          >
+            Syarat dan Ketentuan
+          </Link>
+          <Link
+            href="/about-us"
+            onClick={() => setIsOpen(false)}
+            className={navItemClass("/about-us")}
+          >
+            Tentang Kami
+          </Link>
+          <Link
+            href="/schedule"
+            onClick={() => setIsOpen(false)}
+            className={navItemClass("/schedule")}
+          >
+            Cek Jadwal
+          </Link>
 
-          {isAuth && (
-            <Link
-              href="/profile"
-              onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
-            >
-              Profile Saya
-            </Link>
-          )}
-          {isAuth && (
-            <Link
-              href="/history"
-              onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
-            >
-              Riwayat Booking
-            </Link>
-          )}
-          {isAuth && (
-            <Link
-              href="/points"
-              onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
-            >
-              Top Up Point
-            </Link>
-          )}
-          {isAuth && (
-            <Link
-              href="/transaction"
-              onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
-            >
-              Riwayat Transaksi
-            </Link>
-          )}
-
-          <div className="pt-2 border-t border-gray-200 flex flex-col space-y-2">
-            {isAuth ? (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  handleLogout();
-                }}
-                className="w-full text-center bg-red-500 text-white px-3 py-2 rounded-md font-medium hover:bg-red-600"
+          {!isAuth ? (
+            <>
+              <div className="border-t border-gray-100 my-1" />
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className={navItemClass("/login")}
               >
-                Logout
+                Masuk
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setIsOpen(false)}
+                className={navItemClass("/register")}
+              >
+                Daftar
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="border-t border-gray-100 my-1" />
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="w-full flex items-center justify-between text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                <span>{userName || "Akun"}</span>
+                <svg
+                  className={`ml-2 -mr-1 h-4 w-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="block text-center text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md font-medium"
-                >
-                  Masuk
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setIsOpen(false)}
-                  className="block text-center bg-blue-600 text-white px-3 py-2 rounded-md font-medium hover:bg-blue-700"
-                >
-                  Daftar
-                </Link>
-              </>
-            )}
-          </div>
+
+              {dropdownOpen && (
+                <div className="mt-1 space-y-1">
+                  <Link
+                    href="/profile"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsOpen(false);
+                    }}
+                    className={navItemClass("/profile")}
+                  >
+                    Profile Saya
+                  </Link>
+                  <Link
+                    href="/history"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsOpen(false);
+                    }}
+                    className={navItemClass("/history")}
+                  >
+                    Riwayat Booking
+                  </Link>
+                  <Link
+                    href="/points"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsOpen(false);
+                    }}
+                    className={navItemClass("/points")}
+                  >
+                    Top Up Point
+                  </Link>
+                  <Link
+                    href="/transaction"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsOpen(false);
+                    }}
+                    className={navItemClass("/transaction")}
+                  >
+                    Riwayat Transaksi
+                  </Link>
+                  <div className="border-t border-gray-100 my-1" />
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full text-left text-red-600 hover:bg-red-50 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
     </nav>

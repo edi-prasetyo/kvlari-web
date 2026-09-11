@@ -67,3 +67,11 @@ export interface ResendOtpResponse {
   otp_expires_at?: string;
   user?: User;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}

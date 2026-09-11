@@ -66,6 +66,8 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
     show: false,
   });
   const [countdown, setCountdown] = useState<string>("00:00:00");
+  const [copying, setCopying] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (!data.expired_at) return;
@@ -84,12 +86,16 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
     }, 3000);
   };
 
-  const copyToClipboard = async (text: string) => {
+  const copyToClipboard = async (text: string | null, field: string) => {
+    if (!text) return;
     try {
+      setCopying(field);
       await navigator.clipboard.writeText(text);
       showToast("Berhasil disalin ke clipboard");
     } catch (err) {
       showToast("Gagal menyalin. Silakan salin manual.");
+    } finally {
+      setCopying(null);
     }
   };
 
@@ -97,6 +103,7 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
     if (!data.qris_content && !data.qris_url) return;
 
     try {
+      setDownloading(true);
       showToast("Mengunduh QRIS...");
 
       const qrisData = data.qris_content || data.qris_url;
@@ -118,6 +125,8 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
       showToast("QRIS berhasil diunduh");
     } catch (err) {
       showToast("Gagal mengunduh QRIS. Silakan screenshot dari layar.");
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -210,6 +219,14 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
                 {data.channel || "-"}
               </span>
             </div>
+            {data.account_name && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-600">Atas Nama</span>
+                <span className="text-sm font-semibold text-slate-900">
+                  {data.account_name}
+                </span>
+              </div>
+            )}
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm text-slate-600">Nomor VA</span>
               <div className="flex items-center gap-2">
@@ -218,10 +235,15 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
                 </span>
                 <button
                   type="button"
-                  onClick={() => copyToClipboard(data.payment_number)}
-                  className="p-1.5 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+                  onClick={() => copyToClipboard(data.payment_number, "payment_number")}
+                  disabled={copying === "payment_number"}
+                  className="p-1.5 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Icon icon="mdi:content-copy" width={16} height={16} />
+                  {copying === "payment_number" ? (
+                    <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Icon icon="mdi:content-copy" width={16} height={16} />
+                  )}
                 </button>
               </div>
             </div>
@@ -259,9 +281,17 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
             <button
               type="button"
               onClick={downloadQRIS}
-              className="w-full py-2 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:bg-blue-100 transition-colors"
+              disabled={downloading}
+              className="w-full py-2 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Download Gambar QRIS
+              {downloading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
+                  Mengunduh...
+                </>
+              ) : (
+                "Download Gambar QRIS"
+              )}
             </button>
             <div className="bg-white rounded-lg p-3 border border-slate-200">
               <p className="text-[10px] text-slate-400 font-medium mb-1">Data QRIS</p>
@@ -271,10 +301,18 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
             </div>
             <button
               type="button"
-              onClick={() => copyToClipboard(data.qris_content)}
-              className="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+              onClick={() => copyToClipboard(data.qris_content, "qris_content")}
+              disabled={copying === "qris_content"}
+              className="w-full py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Salin Data QRIS
+              {copying === "qris_content" ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-slate-700 border-t-transparent rounded-full animate-spin" />
+                  Menyalin...
+                </>
+              ) : (
+                "Salin Data QRIS"
+              )}
             </button>
             {data.expired_at && (
               <div className="flex items-center justify-between bg-white rounded-lg p-2 border border-slate-200">
@@ -302,9 +340,17 @@ export const PaymentInstructions = ({ data }: PaymentInstructionsProps) => {
             <button
               type="button"
               onClick={downloadQRIS}
-              className="w-full py-2 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:bg-blue-100 transition-colors"
+              disabled={downloading}
+              className="w-full py-2 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Download Gambar QRIS
+              {downloading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-blue-700 border-t-transparent rounded-full animate-spin" />
+                  Mengunduh...
+                </>
+              ) : (
+                "Download Gambar QRIS"
+              )}
             </button>
             {data.expired_at && (
               <div className="flex items-center justify-between bg-white rounded-lg p-2 border border-slate-200">

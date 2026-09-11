@@ -37,6 +37,7 @@ export interface PaymentData {
   request_id: string;
   payment_number: string | null;
   payment_code: string | null;
+  account_name: string | null;
   qris_content: string | null;
   qris_url: string | null;
   payment_url: string | null;

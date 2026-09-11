@@ -60,6 +60,14 @@ export const LoginForm = ({ redirectTo }: { redirectTo?: string }) => {
             placeholder="Masukkan password"
             className="w-full px-4 py-3 bg-slate-50 border border-slate-200/80 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white transition-all placeholder:text-slate-400 font-medium"
           />
+          <div className="flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-[11px] font-semibold text-blue-600 hover:underline"
+            >
+              Lupa kata sandi?
+            </Link>
+          </div>
         </div>
 
         <button

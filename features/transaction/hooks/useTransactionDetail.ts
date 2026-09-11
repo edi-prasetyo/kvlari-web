@@ -41,5 +41,5 @@ export const useTransactionDetail = (id: string | number | null) => {
     fetchDetail(id);
   }, [id, fetchDetail]);
 
-  return { transaction, isLoading, error, refetch: () => fetchDetail(id) };
+  return { transaction, isLoading, error, refetch: () => id && fetchDetail(id) };
 };

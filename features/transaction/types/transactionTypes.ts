@@ -89,6 +89,7 @@ export interface TransactionDetail {
   transactionable_id: number;
   discount_total: number;
   price: number;
+  admin_fee: number;
   amount: number;
   direction: string;
   status: "pending" | "completed" | "paid" | "failed" | "cancelled" | string;

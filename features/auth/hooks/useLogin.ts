@@ -26,6 +26,19 @@ export const useLogin = (redirectTo?: string) => {
         path: "/",
       });
 
+      const userName =
+        data.user?.name ||
+        (payload as any).login ||
+        (payload as any).email ||
+        "";
+
+      if (userName) {
+        setCookie("user_name", userName, {
+          maxAge: data.expires_in,
+          path: "/",
+        });
+      }
+
       const rawVerifiedState = data.user?.is_verified ?? data.is_verified;
       const isVerified = Number(rawVerifiedState) === 1;
 
